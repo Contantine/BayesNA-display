@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wyq.sentimentanalysis.mapper.BookEmotionMapper">
+  <resultMap id="BaseResultMap" type="cn.wyq.sentimentanalysis.entity.pojo.BookEmotion">
+    <!--@mbg.generated-->
+    <!--@Table book_emotion-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="book_id" jdbcType="INTEGER" property="bookId" />
+    <result column="comment_count" jdbcType="INTEGER" property="commentCount" />
+    <result column="pos_comment_count" jdbcType="INTEGER" property="posCommentCount" />
+    <result column="neg_comment_count" jdbcType="INTEGER" property="negCommentCount" />
+    <result column="emotion_rate" jdbcType="FLOAT" property="emotionRate" />
+  </resultMap>
+
+  <resultMap id="BookListDisplay" type="cn.wyq.sentimentanalysis.entity.pojo.BookEmotion">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="book_id" jdbcType="INTEGER" property="bookId"/>
+    <result column="comment_count" jdbcType="INTEGER" property="commentCount"/>
+    <result column="pos_comment_count" jdbcType="INTEGER" property="posCommentCount" />
+    <result column="neg_comment_count" jdbcType="INTEGER" property="negCommentCount" />
+    <result column="emotion_rate" jdbcType="FLOAT" property="emotionRate" />
+    <association property="book" javaType="cn.wyq.sentimentanalysis.entity.pojo.Book">
+      <id column="book_id" property="bookId"/>
+      <result column="book_name" property="bookName"/>
+      <result column="book_url" property="bookUrl"/>
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, book_id, comment_count, pos_comment_count, neg_comment_count, emotion_rate
+  </sql>
+    <sql id="BookEmotion">
+        be.id, be.book_id, be.comment_count, be.pos_comment_count, be.neg_comment_count, be.emotion_rate
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from book_emotion
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from book_emotion
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.wyq.sentimentanalysis.entity.pojo.BookEmotion" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into book_emotion (book_id, comment_count, pos_comment_count, 
+      neg_comment_count, emotion_rate)
+    values (#{bookId,jdbcType=INTEGER}, #{commentCount,jdbcType=INTEGER}, #{posCommentCount,jdbcType=INTEGER}, 
+      #{negCommentCount,jdbcType=INTEGER}, #{emotionRate,jdbcType=FLOAT})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="cn.wyq.sentimentanalysis.entity.pojo.BookEmotion" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into book_emotion
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="bookId != null">
+        book_id,
+      </if>
+      <if test="commentCount != null">
+        comment_count,
+      </if>
+      <if test="posCommentCount != null">
+        pos_comment_count,
+      </if>
+      <if test="negCommentCount != null">
+        neg_comment_count,
+      </if>
+      <if test="emotionRate != null">
+        emotion_rate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="bookId != null">
+        #{bookId,jdbcType=INTEGER},
+      </if>
+      <if test="commentCount != null">
+        #{commentCount,jdbcType=INTEGER},
+      </if>
+      <if test="posCommentCount != null">
+        #{posCommentCount,jdbcType=INTEGER},
+      </if>
+      <if test="negCommentCount != null">
+        #{negCommentCount,jdbcType=INTEGER},
+      </if>
+      <if test="emotionRate != null">
+        #{emotionRate,jdbcType=FLOAT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.wyq.sentimentanalysis.entity.pojo.BookEmotion">
+    <!--@mbg.generated-->
+    update book_emotion
+    <set>
+      <if test="bookId != null">
+        book_id = #{bookId,jdbcType=INTEGER},
+      </if>
+      <if test="commentCount != null">
+        comment_count = #{commentCount,jdbcType=INTEGER},
+      </if>
+      <if test="posCommentCount != null">
+        pos_comment_count = #{posCommentCount,jdbcType=INTEGER},
+      </if>
+      <if test="negCommentCount != null">
+        neg_comment_count = #{negCommentCount,jdbcType=INTEGER},
+      </if>
+      <if test="emotionRate != null">
+        emotion_rate = #{emotionRate,jdbcType=FLOAT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.wyq.sentimentanalysis.entity.pojo.BookEmotion">
+    <!--@mbg.generated-->
+    update book_emotion
+    set book_id = #{bookId,jdbcType=INTEGER},
+      comment_count = #{commentCount,jdbcType=INTEGER},
+      pos_comment_count = #{posCommentCount,jdbcType=INTEGER},
+      neg_comment_count = #{negCommentCount,jdbcType=INTEGER},
+      emotion_rate = #{emotionRate,jdbcType=FLOAT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+  <select id="selectAll" resultMap="BookListDisplay" >
+    select
+    <include refid="BookEmotion"/>,book.book_name,book.book_url
+    from book_emotion as be ,book
+      where be.book_id=book.book_id
+    <choose>
+      <when test="columnName!=null or columnName == 'null'">
+        order by ${columnName}
+        <choose>
+          <when test="order != null and order == 'desc'">
+            desc
+          </when>
+          <when test="order != null and order == 'asc'">
+            asc
+          </when>
+          <otherwise>
+            desc
+          </otherwise>
+        </choose>
+      </when>
+    </choose>
+
+
+  </select>
+  <select id="selectAllByBookId" resultMap="BookListDisplay">
+    select be.book_id,be.comment_count,be.pos_comment_count,be.neg_comment_count,book.book_name
+    from book_emotion as be,book
+    where be.book_id = #{bookId,jdbcType=INTEGER} and be.book_id=book.book_id
+  </select>
+</mapper>
